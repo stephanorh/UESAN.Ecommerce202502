@@ -31,12 +31,15 @@ namespace UESAN.Ecommerce.CORE.Infrastructure.Repositories
         }
 
         // Funcion asincrona
+        // GET Category
         public async Task<IEnumerable<Category>> GetCategories()
         {
             return await _context.Category
                 .Where(c => c.IsActive == true)
                 .ToListAsync();
         }
+
+        // GET Category 
 
         public async Task<Category> GetCategoryById(int id)
         {
@@ -57,7 +60,12 @@ namespace UESAN.Ecommerce.CORE.Infrastructure.Repositories
         // UPDATE Category
         public async Task UpdateCategory(Category category)
         {
-            _context.Category.Update(category);
+            var categoryExist = await _context.Category.FindAsync(category.Id);
+            if(categoryExist != null)
+            {
+                categoryExist.Description = category.Description;
+                categoryExist.IsActive = categoryExist.IsActive;
+            }
             await _context.SaveChangesAsync();
         }
 
