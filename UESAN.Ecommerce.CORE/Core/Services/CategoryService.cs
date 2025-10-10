@@ -41,7 +41,8 @@ namespace UESAN.Ecommerce.CORE.Core.Services
             var category = await _categoryRepository.GetCategoryById(id);
             if (category == null)
             {
-                return null;
+                // Puedes lanzar una excepción o devolver un nuevo objeto por defecto
+                throw new KeyNotFoundException($"No se encontró la categoría con id {id}.");
             }
             var categoryDTO = new CategoryListDTO();
             categoryDTO.Id = category.Id;
@@ -74,11 +75,10 @@ namespace UESAN.Ecommerce.CORE.Core.Services
         {
             await _categoryRepository.DeleteCategory(id);
         }
-        
+
         //DELETE LOGIC CATEGORY
         public async Task DeleteCategoryLogic(int id)
         {
-
             await _categoryRepository.DeleteCategoryLogic(id);
         }
 
