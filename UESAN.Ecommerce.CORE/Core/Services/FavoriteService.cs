@@ -12,69 +12,67 @@ namespace UESAN.Ecommerce.CORE.Core.Services
     public class FavoriteService : IFavoriteService
     {
         private readonly IFavoriteRepository _favoriteRepository;
+
         public FavoriteService(IFavoriteRepository favoriteRepository)
         {
             _favoriteRepository = favoriteRepository;
         }
 
-        // GET FAVORITES
         public async Task<IEnumerable<FavoriteDetailDTO>> GetFavorites()
         {
-            var favorites = await _favoriteRepository.GetAllFavorites();
+            var favorites = await _favoriteRepository.GetFavorites();
             var favoriteDTOs = new List<FavoriteDetailDTO>();
+
             foreach (var favorite in favorites)
             {
                 var favoriteDTO = new FavoriteDetailDTO();
                 favoriteDTO.Id = favorite.Id;
 
                 var favoriteUserDTO = new UserFavoriteDTO();
-                favoriteUserDTO.Id = favorite.Id;
+                favoriteUserDTO.Id = favorite.User.Id;
                 favoriteUserDTO.FirstName = favorite.User.FirstName;
                 favoriteUserDTO.LastName = favorite.User.LastName;
 
                 favoriteDTO.User = favoriteUserDTO;
 
                 var productFavoriteDTO = new ProductFavoriteDTO();
-                productFavoriteDTO.Id = favorite.Id;
+                productFavoriteDTO.Id = favorite.Product.Id;
                 productFavoriteDTO.Description = favorite.Product.Description;
                 productFavoriteDTO.Price = favorite.Product.Price;
-                productFavoriteDTO.Stock = favorite.Product.Stock;
+                productFavoriteDTO.Stock = (int)favorite.Product.Stock;
 
                 favoriteDTO.Product = productFavoriteDTO;
 
-                favoriteDTOs.Add(favoriteDTO);
 
+                favoriteDTOs.Add(favoriteDTO);
             }
             return favoriteDTOs;
         }
 
-        // GET FAVORITES BY ID
+        // GetFavoriteById
         public async Task<FavoriteDetailDTO> GetFavoriteById(int id)
         {
             var favorite = await _favoriteRepository.GetFavoriteById(id);
-            if (favorite == null) return null;
-
+            if (favorite == null)
+            {
+                return null;
+            }
             var favoriteDTO = new FavoriteDetailDTO();
             favoriteDTO.Id = favorite.Id;
-
             var favoriteUserDTO = new UserFavoriteDTO();
             favoriteUserDTO.Id = favorite.User.Id;
             favoriteUserDTO.FirstName = favorite.User.FirstName;
             favoriteUserDTO.LastName = favorite.User.LastName;
             favoriteDTO.User = favoriteUserDTO;
-
             var productFavoriteDTO = new ProductFavoriteDTO();
             productFavoriteDTO.Id = favorite.Product.Id;
             productFavoriteDTO.Description = favorite.Product.Description;
             productFavoriteDTO.Price = favorite.Product.Price;
-            productFavoriteDTO.Stock = favorite.Product.Stock;
+            productFavoriteDTO.Stock = (int)favorite.Product.Stock;
             favoriteDTO.Product = productFavoriteDTO;
-
             return favoriteDTO;
         }
 
-
-        // INSERT FAVORITE
         public async Task<int> InsertFavorite(FavoriteCreateDTO favoriteCreateDTO)
         {
             var favorite = new Favorite();
@@ -85,11 +83,13 @@ namespace UESAN.Ecommerce.CORE.Core.Services
             return newFavoriteId;
         }
 
-        // DELETE FAVORITE
         public async Task DeleteFavorite(int id)
         {
             await _favoriteRepository.DeleteFavorite(id);
         }
+
+
+
 
     }
 }

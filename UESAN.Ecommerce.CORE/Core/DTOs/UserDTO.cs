@@ -14,8 +14,8 @@ namespace UESAN.Ecommerce.CORE.Core.DTOs
         public string Email { get; set; } = null!;
     }
 
-    public class  UserFavoriteDTO
-    {   
+    public class UserFavoriteDTO
+    {
         public int Id { get; set; }
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;

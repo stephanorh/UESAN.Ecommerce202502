@@ -13,28 +13,31 @@ namespace UESAN.Ecommerce.CORE.Infrastructure.Repositories
     public class FavoriteRepository : IFavoriteRepository
     {
         private readonly StoreDbContext _context;
+
         public FavoriteRepository(StoreDbContext context)
         {
             _context = context;
         }
 
-        //GET Favorites 
-        public async Task<IEnumerable<Favorite>> GetAllFavorites()
+        public async Task<IEnumerable<Favorite>> GetFavorites()
         {
-            return await _context.Favorite.ToListAsync();
+            return await _context
+                .Favorite
+                .Include(p => p.Product)
+                .Include(u => u.User)
+                .ToListAsync();
         }
 
-        //GET Favorite by ID
-        public async Task<Favorite> GetFavoriteById(int id)
+        public async Task<Favorite?> GetFavoriteById(int id)
         {
-            return await _context.Favorite.
-                Include(f => f.Product).
-                Include(f => f.User).
-                Where(f => f.Id == id).
-                FirstOrDefaultAsync();
+            return await _context
+                    .Favorite
+                    .Include(p => p.Product)
+                    .Include(u => u.User)
+                    .Where(f => f.Id == id)
+                    .FirstOrDefaultAsync();
         }
 
-        //INSERT Favorite
         public async Task<int> InsertFavorite(Favorite favorite)
         {
             await _context.Favorite.AddAsync(favorite);
@@ -42,7 +45,6 @@ namespace UESAN.Ecommerce.CORE.Infrastructure.Repositories
             return favorite.Id;
         }
 
-        //DELETE Favorite
         public async Task DeleteFavorite(int id)
         {
             var favorite = await _context.Favorite.FindAsync(id);
@@ -53,9 +55,9 @@ namespace UESAN.Ecommerce.CORE.Infrastructure.Repositories
             }
         }
 
-
-
-
-
+        public Task<IEnumerable<Favorite>> GetAllFavorites()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

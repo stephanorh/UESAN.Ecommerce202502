@@ -13,13 +13,14 @@ namespace UESAN.Ecommerce.CORE.Core.DTOs
         public int? ProductId { get; set; }
     }
 
-    public class FavoriteDetailDTO {
+    public class FavoriteDetailDTO
+    {
         public int Id { get; set; }
         public UserFavoriteDTO? User { get; set; }
         public ProductFavoriteDTO? Product { get; set; }
     }
 
-    public class  FavoriteCreateDTO
+    public class FavoriteCreateDTO
     {
         public int UserId { get; set; }
         public int ProductId { get; set; }
